@@ -9,19 +9,22 @@ namespace fs = std::filesystem;
 class Shell {
   fs::path current_path;
   std::chrono::time_point<std::chrono::high_resolution_clock> start_time, end_time;
+  std::unordered_map<string, void (Shell::*)(const std::vector<string>&)> custom_commands;
 
   STARTUPINFO si;
   PROCESS_INFORMATION pi;
 public:
   Shell();
 
-  void cd(const string& path);
+  [[nodiscard]] string getCurrentPath() const;
+  [[nodiscard]] double getExecutionTime() const;
 
   double executeCommandLine(string& line);
   bool startProcess(const char* app_name, char* command_line);
 
-  [[nodiscard]] string getCurrentPath() const;
-  [[nodiscard]] double getExecutionTime() const;
+  void exitCommand(const std::vector<string>& args);
+  void cdCommand(const std::vector<string>& args);
+  void dirCommand(const std::vector<string>& args);
 
 };
 

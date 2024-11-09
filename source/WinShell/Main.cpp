@@ -11,7 +11,6 @@ int main() {
   while (true) {
     std::cout << shell.getCurrentPath() << "> ";
     std::getline(std::cin, input);
-    os::util::trim(input);
     try {
       if (const double exec_time = shell.executeCommandLine(input); exec_time > 0) {
         std::cout << "Process executed in " << exec_time << "s" << std::endl;

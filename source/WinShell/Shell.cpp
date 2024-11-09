@@ -2,20 +2,15 @@
 
 #include "Util.h"
 
+#define CHECK_ARG_NUMBER(num) if (args.size() != num) {\
+  throw std::invalid_argument(std::format("Wrong number of arguments: {}. Expected: {}", args.size(), num).c_str()); }
+
 namespace os {
 
-Shell::Shell() : current_path(std::filesystem::current_path()) {
-}
-
-void Shell::cd(const string& path) {
-  auto new_path = fs::weakly_canonical(current_path / path);
-  if (!fs::exists(new_path)) {
-    throw std::invalid_argument("No such directory");
-  }
-  if (!fs::is_directory(new_path)) {
-    throw std::invalid_argument("Path is not a directory");
-  }
-  current_path = new_path;
+Shell::Shell() : current_path(std::filesystem::current_path()), si(), pi() {
+  custom_commands["exit"] = &Shell::exitCommand;
+  custom_commands["cd"] = &Shell::cdCommand;
+  custom_commands["dir"] = &Shell::dirCommand;
 }
 
 string Shell::getCurrentPath() const {
@@ -32,11 +27,8 @@ double Shell::executeCommandLine(string& line) {
     return 0;
   }
   string& cmd = args[0];
-  if (cmd == "exit") {
-    exit(0);
-  }
-  if (cmd == "cd" && args.size() > 1) {
-    cd(args[1]);
+  if (custom_commands.contains(cmd)) {
+    (this->*custom_commands.at(cmd))(args);
     return 0;
   }
 
@@ -79,6 +71,29 @@ bool Shell::startProcess(const char* app_name, char* command_line) {
   CloseHandle(pi.hProcess);
   CloseHandle(pi.hThread);
   return true;
+}
+
+void Shell::exitCommand(const std::vector<string>& args) {
+  CHECK_ARG_NUMBER(1);
+  exit(0);
+}
+
+void Shell::cdCommand(const std::vector<string>& args) {
+  CHECK_ARG_NUMBER(2);
+  auto new_path = fs::weakly_canonical(current_path / args[1]);
+  if (!fs::exists(new_path)) {
+    throw std::invalid_argument("No such directory");
+  }
+  if (!fs::is_directory(new_path)) {
+    throw std::invalid_argument("Path is not a directory");
+  }
+  current_path = new_path;
+}
+void Shell::dirCommand(const std::vector<string>& args) {
+  CHECK_ARG_NUMBER(1);
+  for (const auto& entry : fs::directory_iterator(current_path)) {
+    std::cout << entry.path().filename().string() << std::endl;
+  }
 }
 
 }  // namespace os
