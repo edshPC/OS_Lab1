@@ -31,7 +31,7 @@ double Shell::executeCommandLine(string& line) {
   if (args.empty()) {
     return 0;
   }
-  const string& cmd = args[0];
+  string& cmd = args[0];
   if (cmd == "exit") {
     exit(0);
   }
@@ -40,6 +40,9 @@ double Shell::executeCommandLine(string& line) {
     return 0;
   }
 
+  if(!util::contains(cmd, ".")) {
+    cmd += ".exe";
+  }
   const char* file_path = (current_path / cmd).string().c_str();
   char* c_line = line.data();
 

@@ -31,4 +31,8 @@ std::vector<std::string> split(std::string str, const std::string& delimiter) {
   return tokens;
 }
 
+bool contains(const std::string& str, const std::string& substr) {
+  return str.find(substr) != std::string::npos;
+}
+
 }  // namespace os::util

@@ -6,6 +6,8 @@ compile_commands.json
 build/
 *build*/
 
+.idea/
+
 # Temporaries
 *.log
 

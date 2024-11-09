@@ -4,13 +4,13 @@ get_filename_component(MONOLITH_SOURCE_PATH "./${PROJECT_NAME}" ABSOLUTE)
 file(GLOB_RECURSE MONOLITH_SOURCES CONFIGURE_DEPENDS *.hpp *.cpp)
 
 set(MONOLITH_LIB_SOURCES ${MONOLITH_SOURCES}
-        monolith/Util.cpp
-        monolith/Util.h
-        monolith/Global.h
-        monolith/Shell.cpp
-        monolith/Shell.h)
+        WinShell/Util.cpp
+        WinShell/Util.h
+        WinShell/Global.h
+        WinShell/Shell.cpp
+        WinShell/Shell.h)
 
-set(MONOLITH_APP_SOURCES monolith/Main.cpp)
+set(MONOLITH_APP_SOURCES WinShell/Main.cpp)
 
 add_library(${PROJECT_NAME} STATIC ${MONOLITH_LIB_SOURCES})
 target_include_directories(${PROJECT_NAME} PUBLIC ${MONOLITH_INCLUDE_PATH})
