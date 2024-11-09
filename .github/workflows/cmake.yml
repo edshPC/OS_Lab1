@@ -12,16 +12,17 @@ jobs:
       matrix:
         cmake_build_type: [Asan, Release]
 
-    runs-on: ubuntu-24.04
+    runs-on: windows-latest
     steps:
       - name: Checkout
         uses: actions/checkout@v4
 
       - name: Install dependencies
         run: |
-          sudo apt update
-          sudo apt install build-essential
-          sudo apt install clang clang-format clang-tidy
+          choco install cmake --installargs 'ADD_CMAKE_TO_PATH=System' 
+          choco install visualstudio2019community --params "/NoWeb"
+          choco install visualstudio2019buildtools --params "/NoWeb"
+          choco install llvm
 
       - name: Setup ccache
         uses: hendrikmuhs/ccache-action@v1.2
@@ -30,7 +31,10 @@ jobs:
           key: ${{ github.job }}-${{ matrix.cmake_build_type }}
 
       - name: Prepare
-        run: CC=clang CXX=clang++ bash ci/prepare.bash ${{ matrix.cmake_build_type }}
+        run: |
+          set CC=clang
+          set CXX=clang++
+          bash ci/prepare.bash ${{ matrix.cmake_build_type }}
 
       - name: Precommit
         if: matrix.cmake_build_type == 'Release'
