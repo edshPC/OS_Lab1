@@ -15,6 +15,7 @@ Checks: '-*,
   readability-*'
 HeaderFileExtensions:
   - hpp
+  - h
 ImplementationFileExtensions:
   - cpp
 HeaderFilterRegex: ''
@@ -32,7 +33,7 @@ CheckOptions:
   - key: readability-identifier-naming.EnumConstantCase
     value: CamelCase
   - key: readability-identifier-naming.FunctionCase
-    value: CamelCase
+    value: camelCase
   - key: readability-identifier-naming.GlobalConstantCase
     value: CamelCase
   - key: readability-identifier-naming.StaticConstantCase
@@ -45,8 +46,8 @@ CheckOptions:
     value: '^[A-Z]+(_[A-Z]+)*_$'
   - key: readability-identifier-naming.MemberCase
     value: lower_case
-  - key: readability-identifier-naming.PrivateMemberSuffix
-    value: '_'
+#  - key: readability-identifier-naming.PrivateMemberSuffix
+#    value: '_'
   - key: readability-identifier-naming.PublicMemberSuffix
     value: ''
   - key: readability-identifier-naming.NamespaceCase
@@ -61,3 +62,6 @@ CheckOptions:
     value: lower_case
   - key: readability-identifier-naming.IgnoreMainLikeFunctions
     value: 1
+  - key: readability-identifier-length.MinimumVariableNameLength
+    value: 2
+
