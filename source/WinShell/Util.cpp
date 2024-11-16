@@ -3,8 +3,8 @@
 namespace os::util {
 
 void tolower(std::string& str) {
-  std::transform(str.begin(), str.end(), str.begin(), [](unsigned char c) {
-    return std::tolower(c);
+  std::transform(str.begin(), str.end(), str.begin(), [](unsigned char ch) {
+    return std::tolower(ch);
   });
 }
 void trim(std::string& str) {
@@ -16,19 +16,14 @@ void trim(std::string& str) {
     }).base(), str.end());
 }
 
-std::vector<std::string> split(std::string str, const std::string& delimiter) {
-  std::vector<std::string> tokens;
-  size_t pos = 0;
-  while ((pos = str.find(delimiter)) != std::string::npos) {
-    if (std::string const token = str.substr(0, pos); !token.empty()) {
-      tokens.push_back(token);
-    }
-    str.erase(0, pos + delimiter.length());
+std::vector<std::string> split(const std::string& str) {
+  std::istringstream iss(str);
+  std::vector<std::string> res;
+  std::string current;
+  while (iss >> std::quoted(current)) {
+    res.push_back(current);
   }
-  if (!str.empty()) {
-    tokens.push_back(str);
-  }
-  return tokens;
+  return res;
 }
 
 bool contains(const std::string& str, const std::string& substr) {

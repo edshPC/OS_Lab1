@@ -75,9 +75,8 @@ bool Shell::startProcess(const char* app_name, char* command_line) {
 
 void Shell::exitCommand(const std::vector<string>& args) {
   CHECK_ARG_NUMBER(1);
-  exit(0);
+  throw ExitException();
 }
-
 void Shell::cdCommand(const std::vector<string>& args) {
   CHECK_ARG_NUMBER(2);
   auto new_path = fs::weakly_canonical(current_path / args[1]);
@@ -92,7 +91,7 @@ void Shell::cdCommand(const std::vector<string>& args) {
 void Shell::dirCommand(const std::vector<string>& args) {
   CHECK_ARG_NUMBER(1);
   for (const auto& entry : fs::directory_iterator(current_path)) {
-    std::cout << entry.path().filename().string() << std::endl;
+    std::cout << entry.path().filename().string() << '\n';
   }
 }
 

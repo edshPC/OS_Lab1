@@ -6,6 +6,8 @@ namespace os {
 
 namespace fs = std::filesystem;
 
+class ExitException : public std::exception {};
+
 class Shell {
   fs::path current_path;
   std::chrono::time_point<std::chrono::high_resolution_clock> start_time, end_time;
