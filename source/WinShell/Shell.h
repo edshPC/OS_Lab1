@@ -12,14 +12,14 @@ class Shell {
   fs::path current_path;
   std::chrono::time_point<std::chrono::high_resolution_clock> start_time, end_time;
   std::unordered_map<string, void (Shell::*)(const std::vector<string>&)> custom_commands;
+  int process_count = 1;
 
-  STARTUPINFO si;
-  PROCESS_INFORMATION pi;
 public:
   Shell();
 
   [[nodiscard]] string getCurrentPath() const;
   [[nodiscard]] double getExecutionTime() const;
+  [[nodiscard]] int getProcessCount() const;
 
   double executeCommandLine(string& line);
   bool startProcess(const char* app_name, char* command_line);
@@ -27,6 +27,7 @@ public:
   void exitCommand(const std::vector<string>& args);
   void cdCommand(const std::vector<string>& args);
   void dirCommand(const std::vector<string>& args);
+  void tmsCommand(const std::vector<string>& args);
 
 };
 

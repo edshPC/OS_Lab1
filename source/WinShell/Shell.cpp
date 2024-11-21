@@ -2,23 +2,30 @@
 
 #include "Util.h"
 
-#define CHECK_ARG_NUMBER(num) if (args.size() != num) {\
-  throw std::invalid_argument(std::format("Wrong number of arguments: {}. Expected: {}", args.size(), num).c_str()); }
+#define CHECK_ARG_NUMBER(num)                                                                \
+  if (args.size() != num) {                                                                  \
+    throw std::invalid_argument(                                                             \
+        std::format("Wrong number of arguments: {}. Expected: {}", args.size(), num).c_str() \
+    );                                                                                       \
+  }
 
 namespace os {
 
-Shell::Shell() : current_path(std::filesystem::current_path()), si(), pi() {
+Shell::Shell() : current_path(std::filesystem::current_path()) {
   custom_commands["exit"] = &Shell::exitCommand;
   custom_commands["cd"] = &Shell::cdCommand;
   custom_commands["dir"] = &Shell::dirCommand;
+  custom_commands["tms"] = &Shell::tmsCommand;
 }
 
 string Shell::getCurrentPath() const {
   return current_path.string();
 }
-
 double Shell::getExecutionTime() const {
   return std::chrono::duration<double>(end_time - start_time).count();
+}
+int Shell::getProcessCount() const {
+  return process_count;
 }
 
 double Shell::executeCommandLine(string& line) {
@@ -32,7 +39,7 @@ double Shell::executeCommandLine(string& line) {
     return 0;
   }
 
-  if(!util::contains(cmd, ".")) {
+  if (!util::contains(cmd, ".")) {
     cmd += ".exe";
   }
   const char* file_path = (current_path / cmd).string().c_str();
@@ -45,35 +52,46 @@ double Shell::executeCommandLine(string& line) {
 }
 
 bool Shell::startProcess(const char* app_name, char* command_line) {
-  ZeroMemory(&si, sizeof(si));
-  si.cb = sizeof(si);
-  ZeroMemory(&pi, sizeof(pi));
+  STARTUPINFO startup_info;
+  ZeroMemory(&startup_info, sizeof(startup_info));
+  startup_info.cb = sizeof(startup_info);
+
+  std::vector<PROCESS_INFORMATION> process_informations(process_count);
+  std::vector<HANDLE> process_handles(process_count);
 
   start_time = std::chrono::high_resolution_clock::now();
-  if (!CreateProcess(
-          app_name,                       // имя исполняемого файла
-          command_line,                   // командная строка
-          nullptr,                        // процесс не наследует дескрипторы
-          nullptr,                        // поток не наследует дескрипторы
-          FALSE,                          // не наследовать дескрипторы
-          0,                              // флаги создания
-          nullptr,                        // использовать текущую среду
-          current_path.string().c_str(),  // использовать текущую директорию
-          &si,                            // информация о старте
-          &pi                             // информация о процессе
-      )) {
-    return false;
+  for (int i = 0; i < process_count; i++) {
+    auto* p_info = &process_informations[i];
+    ZeroMemory(p_info, sizeof(PROCESS_INFORMATION));
+    if (!CreateProcess(
+            app_name,                       // имя исполняемого файла
+            command_line,                   // командная строка
+            nullptr,                        // процесс не наследует дескрипторы
+            nullptr,                        // поток не наследует дескрипторы
+            FALSE,                          // не наследовать дескрипторы
+            0,                              // флаги создания
+            nullptr,                        // использовать текущую среду
+            current_path.string().c_str(),  // использовать текущую директорию
+            &startup_info,                  // информация о старте
+            p_info                          // информация о процессе
+        )) {
+      return false;
+    }
+    process_handles[i] = p_info->hProcess;
   }
 
-  WaitForSingleObject(pi.hProcess, INFINITE);
+  WaitForMultipleObjects(process_count, process_handles.data(), TRUE, INFINITE);
   end_time = std::chrono::high_resolution_clock::now();
 
-  CloseHandle(pi.hProcess);
-  CloseHandle(pi.hThread);
+  for (auto& pi : process_informations) {
+    CloseHandle(pi.hProcess);
+    CloseHandle(pi.hThread);
+  }
   return true;
 }
 
-void Shell::exitCommand(const std::vector<string>& args) {
+void Shell::exitCommand(const std::vector<string>& args
+) {  // NOLINT(*-convert-member-functions-to-static)
   CHECK_ARG_NUMBER(1);
   throw ExitException();
 }
@@ -93,6 +111,11 @@ void Shell::dirCommand(const std::vector<string>& args) {
   for (const auto& entry : fs::directory_iterator(current_path)) {
     std::cout << entry.path().filename().string() << '\n';
   }
+}
+void Shell::tmsCommand(const std::vector<string>& args) {
+  CHECK_ARG_NUMBER(2);
+  process_count = std::stoi(args[1]);
+  std::cout << "Creation process count is set to " << process_count << '\n';
 }
 
 }  // namespace os

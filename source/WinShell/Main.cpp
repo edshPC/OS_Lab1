@@ -15,7 +15,7 @@ int main() {
     if (!std::getline(std::cin, input)) { break; }
     try {
       if (const double exec_time = shell.executeCommandLine(input); exec_time > 0) {
-        std::cout << "Process executed in " << exec_time << "s\n";
+        std::cout << shell.getProcessCount() << " process(es) executed in " << exec_time << "s\n";
       }
     } catch (const os::ExitException&) {
       break;
