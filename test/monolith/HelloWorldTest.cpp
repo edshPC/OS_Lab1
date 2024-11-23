@@ -8,4 +8,4 @@ TEST(HelloWorld, ExactMatch) {
   ASSERT_EQ(HelloWorld(), "Hello, World!");
 }
 
-}  // namespace monolith
+}  // namespace WinShell

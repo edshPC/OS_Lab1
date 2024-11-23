@@ -5,6 +5,8 @@ project(WinShell VERSION 0.1.0)
 option(MONOLITH_DEVELOPER "Enable ${PROJECT_NAME} developer mode" OFF)
 option(MONOLITH_BENCHMARK "Enable ${PROJECT_NAME} benchmark module" OFF)
 
+set(MONOLITH_BENCHMARK ON)
+
 list(APPEND CMAKE_MODULE_PATH "${CMAKE_SOURCE_DIR}/cmake")
 
 include(cmake/CompileOptions.cmake)

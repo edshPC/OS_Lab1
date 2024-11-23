@@ -1,10 +1,8 @@
 #include <benchmark/benchmark.h>
 
-#include "monolith/HelloWorld.hpp"
-
 void Sample(benchmark::State& state) {
   for (auto _ : state) {
-    auto result = monolith::HelloWorld();
+    auto result = 2 + 2;
     benchmark::DoNotOptimize(result);
   }
 }
