@@ -42,10 +42,11 @@ double Shell::executeCommandLine(string& line) {
   if (!util::contains(cmd, ".")) {
     cmd += ".exe";
   }
-  const char* file_path = (current_path / cmd).string().c_str();
+  const string file_path = (current_path / cmd).string();
+  const char* c_file_path = file_path.c_str();
   char* c_line = line.data();
 
-  if (!startProcess(file_path, c_line) && !startProcess(nullptr, c_line)) {
+  if (!startProcess(c_file_path, c_line) && !startProcess(nullptr, c_line)) {
     throw std::exception(std::format("Failed to start process: {}", GetLastError()).c_str());
   }
   return getExecutionTime();
