@@ -21,7 +21,7 @@ public:
   [[nodiscard]] double getExecutionTime() const;
   [[nodiscard]] int getProcessCount() const;
 
-  double executeCommandLine(string& line);
+  double executeCommandLine(string line);
   bool startProcess(const char* app_name, char* command_line);
 
   void exitCommand(const std::vector<string>& args);

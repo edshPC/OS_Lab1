@@ -28,7 +28,7 @@ int Shell::getProcessCount() const {
   return process_count;
 }
 
-double Shell::executeCommandLine(string& line) {
+double Shell::executeCommandLine(string line) {
   auto args = util::split(line);
   if (args.empty()) {
     return 0;
@@ -91,8 +91,7 @@ bool Shell::startProcess(const char* app_name, char* command_line) {
   return true;
 }
 
-void Shell::exitCommand(const std::vector<string>& args
-) {  // NOLINT(*-convert-member-functions-to-static)
+void Shell::exitCommand(const std::vector<string>& args) {  // NOLINT(*-convert-member-functions-to-static)
   CHECK_ARG_NUMBER(1);
   throw ExitException();
 }

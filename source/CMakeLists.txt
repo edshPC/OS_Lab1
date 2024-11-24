@@ -3,6 +3,8 @@ get_filename_component(MONOLITH_SOURCE_PATH "./${PROJECT_NAME}" ABSOLUTE)
 
 file(GLOB_RECURSE MONOLITH_SOURCES CONFIGURE_DEPENDS *.hpp *.cpp)
 
+add_compile_options(/Wall)
+
 set(MONOLITH_LIB_SOURCES ${MONOLITH_SOURCES}
         WinShell/Util.cpp
         WinShell/Util.h
