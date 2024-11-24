@@ -17,7 +17,7 @@ TEST(Shell, ChangeDirectory) { // NOLINT
 TEST(Shell, Execute) { // NOLINT
   Shell shell;
 
-  shell.executeCommandLine("../benchmark/WinShell-bench-dedup");
+  shell.executeCommandLine("../../benchmark/Debug/WinShell-bench-dedup");
   ASSERT_GT(shell.getExecutionTime(), 0); // Exec time must be > 0
 
   shell.executeCommandLine("tms 4");

@@ -34,10 +34,28 @@ jobs:
         run: |
           .\WinShell-test.exe
 
+      - name: Upload
+        uses: actions/upload-artifact@v4
+        with:
+          name: WinShell.exe
+          path: |
+            build\source\Debug
+
   linter:
     runs-on: ubuntu-latest
 
     steps:
       - uses: actions/checkout@v4
-      - name: Run clang-tidy
-        uses: HorstBaerbel/action-clang-tidy@1.2
+
+      # Optionally generate compile_commands.json
+
+      - uses: ZedThree/clang-tidy-review@v0.14.0
+        id: review
+
+      # Uploads an artefact containing clang_fixes.json
+      - uses: ZedThree/clang-tidy-review/upload@v0.14.0
+        id: upload-review
+
+      # If there are any comments, fail the check
+      - if: steps.review.outputs.total_comments > 0
+        run: exit 1
