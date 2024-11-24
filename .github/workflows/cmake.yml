@@ -29,6 +29,14 @@ jobs:
         run: cmake --build build --config Debug
 
       - name: Run tests
-        working-directory: cmake-build-debug-visual-studio\test
+        working-directory: build\test\Debug
         run: |
           .\WinShell-test.exe
+
+  linter:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+      - name: Run clang-tidy
+        uses: HorstBaerbel/action-clang-tidy@1.2
