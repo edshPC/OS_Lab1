@@ -26,11 +26,11 @@ void prepeare() {
   const size_t place = dis(gen);
   output[place] = ToFind;  // Найти это значение в случайном месте
 
-  std::ofstream out_file("input.bin", std::ios::binary | std::ios::trunc);
+  std::ofstream out_file("input.bin", std::ios::binary | std::ios::trunc); // NOLINT
   if (!out_file) {
     throw std::runtime_error("Failed to open output file");
   }
-  out_file.write(reinterpret_cast<const char*>(output.data()), sizeof(int64_t) * FileSize);
+  out_file.write(reinterpret_cast<const char*>(output.data()), sizeof(int64_t) * FileSize); // NOLINT
   out_file.close();
   std::cout << "File size num " << FileSize << '\n';
   std::cout << "RAM size num " << RAMSize << '\n';

@@ -24,7 +24,7 @@ size_t compute(std::vector<int64_t>& array) {
   std::unordered_set<int64_t> seen;
   std::vector<int64_t> unique_elements;
 
-  for (const auto& elem : array) {
+  for (const auto elem : array) {
     if (seen.insert(elem).second) {
       unique_elements.push_back(elem);
     }
@@ -43,6 +43,7 @@ public:
     array = std::vector<int64_t>(RAMSize);
     prepeare(array);
     Unit(benchmark::kMillisecond);
+    //Threads(16);
   }
   std::vector<int64_t>& getArray() { return array; }
 };
