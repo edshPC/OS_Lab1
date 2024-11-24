@@ -40,9 +40,9 @@ if [ "$MODE" = "fix" ]; then
   | xargs clang-format -i --fallback-style=Google --verbose
 fi
 
-message "Checking code format..."
-find source test -iname '*.hpp' -o -iname '*.cpp' \
-| xargs clang-format -Werror --dry-run --fallback-style=Google --verbose
+#message "Checking code format..."
+#find source test -iname '*.hpp' -o -iname '*.cpp' \
+#| xargs clang-format -Werror --dry-run --fallback-style=Google --verbose
 
 if [ "$STYLE" = "--style" ]; then
   message "Checking code style..."

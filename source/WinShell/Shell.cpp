@@ -1,12 +1,12 @@
 #include "Shell.h"
+
 #include "Util.h"
 
-#define CHECK_ARG_NUMBER(num)                                      \
-  if (args.size() != num) {                                        \
-    throw std::invalid_argument(                                   \
-        std::format("Wrong number of arguments: {}. Expected: {}", \
-                    args.size(), num)                              \
-            .c_str());                                             \
+#define CHECK_ARG_NUMBER(num)                                                                \
+  if (args.size() != num) {                                                                  \
+    throw std::invalid_argument(                                                             \
+        std::format("Wrong number of arguments: {}. Expected: {}", args.size(), num).c_str() \
+    );                                                                                       \
   }
 
 namespace os {
@@ -18,11 +18,15 @@ Shell::Shell() : current_path(std::filesystem::current_path()) {
   custom_commands["tms"] = &Shell::tmsCommand;
 }
 
-string Shell::getCurrentPath() const { return current_path.string(); }
+string Shell::getCurrentPath() const {
+  return current_path.string();
+}
 double Shell::getExecutionTime() const {
   return std::chrono::duration<double>(end_time - start_time).count();
 }
-int Shell::getProcessCount() const { return process_count; }
+int Shell::getProcessCount() const {
+  return process_count;
+}
 
 double Shell::executeCommandLine(string line) {
   auto args = util::split(line);
@@ -43,8 +47,7 @@ double Shell::executeCommandLine(string line) {
   char* c_line = line.data();
 
   if (!startProcess(c_file_path, c_line) && !startProcess(nullptr, c_line)) {
-    throw std::exception(
-        std::format("Failed to start process: {}", GetLastError()).c_str());
+    throw std::exception(std::format("Failed to start process: {}", GetLastError()).c_str());
   }
   return getExecutionTime();
 }
@@ -62,17 +65,17 @@ bool Shell::startProcess(const char* app_name, char* command_line) {
     auto* p_info = &process_informations[i];
     ZeroMemory(p_info, sizeof(PROCESS_INFORMATION));
     if (!CreateProcess(
-            app_name,      // имя исполняемого файла
-            command_line,  // командная строка
-            nullptr,  // процесс не наследует дескрипторы
-            nullptr,  // поток не наследует дескрипторы
-            FALSE,    // не наследовать дескрипторы
-            0,        // флаги создания
-            nullptr,  // использовать текущую среду
+            app_name,                       // имя исполняемого файла
+            command_line,                   // командная строка
+            nullptr,                        // процесс не наследует дескрипторы
+            nullptr,                        // поток не наследует дескрипторы
+            FALSE,                          // не наследовать дескрипторы
+            0,                              // флаги создания
+            nullptr,                        // использовать текущую среду
             current_path.string().c_str(),  // использовать текущую директорию
-            &startup_info,  // информация о старте
-            p_info          // информация о процессе
-            )) {
+            &startup_info,                  // информация о старте
+            p_info                          // информация о процессе
+        )) {
       return false;
     }
     process_handles[i] = p_info->hProcess;
@@ -88,8 +91,8 @@ bool Shell::startProcess(const char* app_name, char* command_line) {
   return true;
 }
 
-void Shell::exitCommand(  // NOLINT(*-convert-member-functions-to-static)
-    const std::vector<string>& args) {
+void Shell::exitCommand(const std::vector<string>& args
+) {  // NOLINT(*-convert-member-functions-to-static)
   CHECK_ARG_NUMBER(1);
   throw ExitException();
 }
