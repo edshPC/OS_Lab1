@@ -45,17 +45,13 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - uses: actions/checkout@v4
+      - name: Checkout
+        uses: actions/checkout@v4
 
-      # Optionally generate compile_commands.json
+      - name: Install dependencies
+        run: |
+          sudo apt update
+          sudo apt install clang clang-format clang-tidy
 
-      - uses: ZedThree/clang-tidy-review@v0.20
-        id: review
-
-      # Uploads an artefact containing clang_fixes.json
-      - uses: ZedThree/clang-tidy-review/upload@v0.20
-        id: upload-review
-
-      # If there are any comments, fail the check
-      - if: steps.review.outputs.total_comments > 0
-        run: exit 1
+      - name: Precommit
+        run: bash ci/precommit.bash check --style
