@@ -29,6 +29,7 @@ int Shell::getProcessCount() const {
 }
 
 double Shell::executeCommandLine(string line) {
+  auto lines = util::split(line, "|");
   auto args = util::split(line);
   if (args.empty()) {
     return 0;
@@ -76,6 +77,10 @@ bool Shell::startProcess(const char* app_name, char* command_line) {
             &startup_info,                  // информация о старте
             p_info                          // информация о процессе
         )) {
+      for (int j = 0; j < i; j++) {  // prevent zombie
+        CloseHandle(process_informations[j].hProcess);
+        CloseHandle(process_informations[j].hThread);
+      }
       return false;
     }
     process_handles[i] = p_info->hProcess;
@@ -91,8 +96,7 @@ bool Shell::startProcess(const char* app_name, char* command_line) {
   return true;
 }
 
-void Shell::exitCommand(const std::vector<string>& args
-) {  // NOLINT(*-convert-member-functions-to-static)
+void Shell::exitCommand(const std::vector<string>& args) {  // NOLINT(*-convert-member-functions-to-static)
   CHECK_ARG_NUMBER(1);
   throw ExitException();
 }
