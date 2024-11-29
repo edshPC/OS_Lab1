@@ -44,6 +44,9 @@ double Shell::executeCommandLine(const string& full_line) {
   for (auto it = lines.begin(); it != lines.end(); ++it) {
     string line = *it;
     util::trim(line);
+    if (line.empty()) {
+      continue;
+    }
 
     if (lines.size() > 1) {
       pipe_stdin = it != lines.begin();
@@ -75,6 +78,7 @@ double Shell::executeCommandLine(const string& full_line) {
       last_output = "";
       while (ReadFile(std_out_read, buf.data(), BufSize - 1, &bytes_read, nullptr)  // NOLINT
              && bytes_read > 0) {
+        buf[bytes_read] = '\0';
         last_output += buf.data();
       }
       CloseHandle(std_out_read);
